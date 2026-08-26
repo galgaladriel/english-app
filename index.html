@@ -188,7 +188,7 @@
         // 1. CONFIGURACIÓN
         // ==========================================
         // IMPORTANTE: Reemplaza con tu API Key de OpenAI
-        const OPENAI_API_KEY = 'TU_API_KEY_AQUI';
+        const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'TU_API_KEY_AQUI';
 
         // ==========================================
         // 2. BASE DE DATOS LOCAL (localStorage)
