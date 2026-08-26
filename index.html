@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnglishMate - Aprende Inglés</title>
+    <style>
+        /* ===== ESTILOS MINIMALISTAS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* ===== CHAT ===== */
+        .chat-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #eee;
+        }
+
+        .chat-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding-right: 8px;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            max-width: 85%;
+            font-size: 0.95rem;
+        }
+
+        .message.user {
+            background: #e8e8e8;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.bot {
+            background: #f0f0f0;
+            margin-right: auto;
+        }
+
+        .message.bot .correction {
+            color: #d32f2f;
+            font-weight: 500;
+            margin-top: 4px;
+            font-size: 0.9rem;
+        }
+
+        .message.bot .tip {
+            color: #2e7d32;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            background: #f1f8e9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .chat-input-area input:focus {
+            border-color: #1a1a1a;
+        }
+
+        .chat-input-area button {
+            padding: 10px 20px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background: #333;
+        }
+
+        /* ===== ESTADÍSTICAS ===== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stat-card .label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== TIPS GUARDADOS ===== */
+        .tips-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            padding: 20px;
+        }
+
+        .tips-section h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #444;
+        }
+
+        .tip-item {
+            background: #f8f8f8;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tip-item .delete-tip {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .tip-item .delete-tip:hover {
+            color: #d32f2f;
+        }
+
+        .empty-tips {
+            color: #aaa;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .chat-input-area { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <h1>english<span style="font-weight:300;">mate</span></h1>
+    <p class="subtitle">Habla en inglés. Recibe correcciones y tips.</p>
+
+    <!-- ===== ESTADÍSTICAS ===== -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="number" id="totalMessages">0</div>
+            <div class="label">Mensajes</div>
+        </div>
+        <div class="stat-card">
+            <div class="number" id="totalErrors">0</div>
+            <div class="label">Errores corregidos</div>
+        </div>
+        <div class="stat-card">
+            <div class="number" id="streakDays">0</div>
+            <div class="label">Racha (días)</div>
+        </div>
+    </div>
+
+    <!-- ===== CHAT ===== -->
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                👋 Hola. Escribe algo en inglés y te corregiré.
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Escribe en inglés..." autofocus>
+            <button id="sendBtn">Enviar</button>
+        </div>
+    </div>
+
+    <!-- ===== TIPS GUARDADOS ===== -->
+    <div class="tips-section">
+        <h3>📌 Tips guardados automáticamente</h3>
+        <div id="tipsList">
+            <div class="empty-tips">Aún no hay tips. Comienza a practicar.</div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ==========================================
+        // 1. BASE DE DATOS LOCAL (localStorage)
+        // ==========================================
+        const DB = {
+            get(key, defaultValue = null) {
+                const data = localStorage.getItem('englishmate_' + key);
+                return data ? JSON.parse(data) : defaultValue;
+            },
+            set(key, value) {
+                localStorage.setItem('englishmate_' + key, JSON.stringify(value));
+            }
+        };
+
+        // ==========================================
+        // 2. ESTADO
+        // ==========================================
+        let state = {
+            messages: DB.get('messages', []),
+            errors: DB.get('errors', 0),
+            streak: DB.get('streak', 0),
+            lastDate: DB.get('lastDate', null),
+            tips: DB.get('tips', [])
+        };
+
+        // ==========================================
+        // 3. CORRECCIONES BÁSICAS (sin IA)
+        // ==========================================
+        function getCorrections(text) {
+            const corrections = [];
+            const lower = text.toLowerCase();
+
+            // Errores comunes
+            const rules = [
+                { pattern: /\b(i)\s+(is|am|are)\b/gi, fix: 'I am', tip: 'Usa "I am" no "I is"' },
+                { pattern: /\b(he|she|it)\s+(am)\b/gi, fix: 'he/she/it is', tip: 'Con he/she/it usa "is"' },
+                { pattern: /\b(go)\s+(to)\s+(home)\b/gi, fix: 'go home', tip: 'No se dice "go to home", solo "go home"' },
+                { pattern: /\b(very)\s+(much)\b/gi, fix: 'very much (solo en algunos casos)', tip: '"Very much" se usa con verbos como "thank"' },
+                { pattern: /\b(eat)\s+(breakfast|lunch|dinner)\b/gi, fix: 'have breakfast/lunch/dinner', tip: 'Usa "have" con comidas, no "eat"' },
+                { pattern: /\b(interesting)\s+(person)\b/gi, fix: 'interesting person', tip: 'Adjetivo antes del sustantivo' },
+            ];
+
+            for (const rule of rules) {
+                if (rule.pattern.test(text)) {
+                    const fixed = text.replace(rule.pattern, rule.fix);
+                    if (fixed !== text) {
+                        corrections.push({
+                            original: text,
+                            fixed: fixed,
+                            tip: rule.tip
+                        });
+                        break; // solo una corrección por mensaje
+                    }
+                }
+            }
+
+            // Si no hay regla, devuelve null
+            return corrections.length > 0 ? corrections[0] : null;
+        }
+
+        // ==========================================
+        // 4. RENDERIZAR CHAT
+        // ==========================================
+        function renderChat() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+
+            // Mostrar todos los mensajes guardados
+            state.messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.role}`;
+                div.innerHTML = msg.text;
+
+                if (msg.correction) {
+                    const corrDiv = document.createElement('div');
+                    corrDiv.className = 'correction';
+                    corrDiv.textContent = `✅ ${msg.correction.fixed}`;
+                    div.appendChild(corrDiv);
+
+                    const tipDiv = document.createElement('div');
+                    tipDiv.className = 'tip';
+                    tipDiv.textContent = `💡 ${msg.correction.tip}`;
+                    div.appendChild(tipDiv);
+                }
+
+                container.appendChild(div);
+            });
+
+            // Scroll al final
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // ==========================================
+        // 5. RENDERIZAR TIPS
+        // ==========================================
+        function renderTips() {
+            const container = document.getElementById('tipsList');
+            if (state.tips.length === 0) {
+                container.innerHTML = '<div class="empty-tips">Aún no hay tips. Comienza a practicar.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            state.tips.forEach((tip, index) => {
+                const div = document.createElement('div');
+                div.className = 'tip-item';
+                div.innerHTML = `
+                    <span>💡 ${tip}</span>
+                    <button class="delete-tip" data-index="${index}">✕</button>
+                `;
+                container.appendChild(div);
+            });
+
+            // Eliminar tips
+            document.querySelectorAll('.delete-tip').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    state.tips.splice(index, 1);
+                    DB.set('tips', state.tips);
+                    renderTips();
+                });
+            });
+        }
+
+        // ==========================================
+        // 6. ACTUALIZAR ESTADÍSTICAS
+        // ==========================================
+        function updateStats() {
+            document.getElementById('totalMessages').textContent = state.messages.length;
+            document.getElementById('totalErrors').textContent = state.errors;
+            document.getElementById('streakDays').textContent = state.streak;
+        }
+
+        // ==========================================
+        // 7. ACTUALIZAR RACHA
+        // ==========================================
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (state.lastDate !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toDateString();
+
+                if (state.lastDate === yesterdayStr) {
+                    state.streak += 1;
+                } else if (state.lastDate !== today) {
+                    state.streak = 1;
+                }
+
+                state.lastDate = today;
+                DB.set('streak', state.streak);
+                DB.set('lastDate', state.lastDate);
+                updateStats();
+            }
+        }
+
+        // ==========================================
+        // 8. ENVIAR MENSAJE
+        // ==========================================
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            // Guardar mensaje del usuario
+            state.messages.push({ role: 'user', text: text });
+            DB.set('messages', state.messages);
+
+            // Buscar corrección
+            const correction = getCorrections(text);
+
+            let botReply = '✅ ¡Bien escrito!';
+            if (correction) {
+                botReply = `❌ Hay un error: "${correction.original}" → "${correction.fixed}"`;
+                state.errors += 1;
+                DB.set('errors', state.errors);
+
+                // Guardar tip automáticamente
+                if (!state.tips.includes(correction.tip)) {
+                    state.tips.push(correction.tip);
+                    DB.set('tips', state.tips);
+                }
+            }
+
+            // Guardar mensaje del bot
+            state.messages.push({
+                role: 'bot',
+                text: botReply,
+                correction: correction || null
+            });
+            DB.set('messages', state.messages);
+
+            // Actualizar interfaz
+            renderChat();
+            renderTips();
+            updateStats();
+            updateStreak();
+
+            // Limpiar input
+            input.value = '';
+            input.focus();
+        }
+
+        // ==========================================
+        // 9. INICIALIZAR
+        // ==========================================
+        function init() {
+            renderChat();
+            renderTips();
+            updateStats();
+            updateStreak();
+
+            // Eventos
+            document.getElementById('sendBtn').addEventListener('click', sendMessage);
+            document.getElementById('chatInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
+
+        // Cargar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>
