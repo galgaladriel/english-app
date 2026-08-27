@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EnglishMate - Aprende Inglés</title>
+    <title>EnglishMate - Tu profe de inglés IA</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f8f9fa;
@@ -21,7 +20,6 @@
             line-height: 1.6;
             min-height: 100vh;
         }
-
         .header {
             display: flex;
             justify-content: space-between;
@@ -30,15 +28,13 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-
         h1 {
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
-
         .badge {
-            background: #2e7d32;
+            background: #1a1a1a;
             color: white;
             padding: 4px 14px;
             border-radius: 20px;
@@ -46,33 +42,28 @@
             font-weight: 600;
             text-transform: uppercase;
         }
-
         .subtitle {
             color: #666;
             margin-bottom: 24px;
             font-size: 0.95rem;
         }
-
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 300px;
             gap: 24px;
             align-items: start;
         }
-
         @media (max-width: 800px) {
             .main-grid {
                 grid-template-columns: 1fr;
             }
         }
-
         .stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 24px;
         }
-
         .stat-card {
             background: white;
             padding: 16px;
@@ -80,18 +71,15 @@
             border: 1px solid #eaeaea;
             text-align: center;
         }
-
         .stat-card .number {
             font-size: 1.8rem;
             font-weight: 700;
         }
-
         .stat-card .label {
             font-size: 0.7rem;
             color: #888;
             text-transform: uppercase;
         }
-
         .chat-container {
             background: white;
             border-radius: 16px;
@@ -99,14 +87,12 @@
             padding: 20px;
             margin-bottom: 24px;
         }
-
         .chat-messages {
             max-height: 380px;
             overflow-y: auto;
             margin-bottom: 16px;
             padding-right: 4px;
         }
-
         .message {
             margin-bottom: 12px;
             padding: 10px 14px;
@@ -115,7 +101,6 @@
             font-size: 0.95rem;
             animation: fadeIn 0.3s ease;
         }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -126,27 +111,23 @@
                 transform: translateY(0);
             }
         }
-
         .message.user {
             background: #e8e8e8;
             margin-left: auto;
             text-align: right;
             border-bottom-right-radius: 4px;
         }
-
         .message.bot {
             background: #f0f0f0;
             margin-right: auto;
             border-bottom-left-radius: 4px;
         }
-
         .message .correction {
             color: #d32f2f;
             font-weight: 500;
             margin-top: 6px;
             font-size: 0.9rem;
         }
-
         .message .tip {
             color: #2e7d32;
             font-size: 0.85rem;
@@ -156,19 +137,12 @@
             border-radius: 6px;
             display: inline-block;
         }
-
-        .message .perfect {
-            color: #2e7d32;
-            font-weight: 500;
-        }
-
         .chat-input-area {
             display: flex;
             gap: 10px;
             border-top: 1px solid #f0f0f0;
             padding-top: 16px;
         }
-
         .chat-input-area input {
             flex: 1;
             padding: 10px 14px;
@@ -177,11 +151,9 @@
             font-size: 0.95rem;
             outline: none;
         }
-
         .chat-input-area input:focus {
             border-color: #1a1a1a;
         }
-
         .chat-input-area button {
             padding: 10px 24px;
             background: #1a1a1a;
@@ -193,16 +165,13 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .chat-input-area button:hover {
             background: #333;
         }
-
         .chat-input-area button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
         .loading {
             color: #666;
             font-size: 0.9rem;
@@ -212,7 +181,6 @@
             align-items: center;
             gap: 8px;
         }
-
         .spinner {
             display: inline-block;
             width: 16px;
@@ -222,13 +190,21 @@
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
         }
-
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
         }
-
+        .error-msg {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border-left: 4px solid #d32f2f;
+            display: none;
+        }
         .tips-section {
             background: white;
             border-radius: 16px;
@@ -236,20 +212,17 @@
             padding: 20px;
             margin-bottom: 24px;
         }
-
         .tips-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
         }
-
         .tips-section h3 {
             font-size: 0.9rem;
             font-weight: 600;
             color: #444;
         }
-
         .clear-tips {
             background: none;
             border: none;
@@ -259,12 +232,10 @@
             padding: 4px 8px;
             border-radius: 4px;
         }
-
         .clear-tips:hover {
             background: #f0f0f0;
             color: #d32f2f;
         }
-
         .tip-item {
             background: #f8f8f8;
             padding: 8px 12px;
@@ -275,7 +246,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .tip-item .delete-tip {
             background: none;
             border: none;
@@ -283,17 +253,14 @@
             cursor: pointer;
             font-size: 1rem;
         }
-
         .tip-item .delete-tip:hover {
             color: #d32f2f;
         }
-
         .empty-tips {
             color: #aaa;
             font-size: 0.9rem;
             font-style: italic;
         }
-
         .verbs-card {
             background: white;
             border-radius: 16px;
@@ -302,7 +269,6 @@
             position: sticky;
             top: 20px;
         }
-
         .verbs-card h3 {
             font-size: 0.9rem;
             font-weight: 600;
@@ -312,7 +278,6 @@
             align-items: center;
             gap: 8px;
         }
-
         .verbs-search {
             width: 100%;
             padding: 8px 12px;
@@ -322,17 +287,14 @@
             margin-bottom: 12px;
             outline: none;
         }
-
         .verbs-search:focus {
             border-color: #1a1a1a;
         }
-
         .verbs-list {
             max-height: 400px;
             overflow-y: auto;
             font-size: 0.85rem;
         }
-
         .verb-item {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -340,34 +302,27 @@
             padding: 6px 4px;
             border-bottom: 1px solid #f0f0f0;
         }
-
         .verb-item:hover {
             background: #f8f9fa;
         }
-
         .verb-item .v-presente {
             font-weight: 600;
         }
-
         .verb-item .v-pasado {
             color: #d32f2f;
         }
-
         .verb-item .v-futuro {
             color: #1565c0;
         }
-
         .verb-item .v-participio {
             color: #2e7d32;
         }
-
         .no-verbs {
             color: #aaa;
             font-style: italic;
             font-size: 0.9rem;
             padding: 12px 0;
         }
-
         @media (max-width: 600px) {
             body {
                 padding: 12px;
@@ -402,9 +357,9 @@
 
     <div class="header">
         <h1>english<span style="font-weight:300;">mate</span></h1>
-        <span class="badge">✅ Sin IA</span>
+        <span class="badge">🤖 IA</span>
     </div>
-    <p class="subtitle">Escribe en inglés y recibe correcciones automáticas. Consulta los verbos a la derecha.</p>
+    <p class="subtitle">Escribe en inglés y recibe correcciones con IA. Consulta los verbos a la derecha.</p>
 
     <div class="stats">
         <div class="stat-card">
@@ -425,15 +380,16 @@
         <div>
             <div class="chat-container">
                 <div class="chat-messages" id="chatMessages">
-                    <div class="message bot">👋 ¡Hola! Escribe algo en inglés y te corregiré.</div>
+                    <div class="message bot">👋 ¡Hola! Escribe algo en inglés y la IA te corregirá.</div>
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="chatInput" placeholder="Escribe en inglés..." autofocus>
                     <button id="sendBtn">Enviar</button>
                 </div>
                 <div id="loadingIndicator" class="loading">
-                    <span class="spinner"></span> Revisando...
+                    <span class="spinner"></span> La IA está pensando...
                 </div>
+                <div id="errorDisplay" class="error-msg"></div>
             </div>
 
             <div class="tips-section">
@@ -458,7 +414,13 @@
 
     <script>
         // ==========================================
-        // 1. 💾 BASE DE DATOS LOCAL
+        // 1. CONFIGURACIÓN
+        // ==========================================
+        const OPENAI_API_KEY = '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';
+        const WORKER_URL = 'https://englishmate-proxy.galgaladriel.workers.dev';
+
+        // ==========================================
+        // 2. BASE DE DATOS LOCAL
         // ==========================================
         const DB = {
             get(key, def = null) {
@@ -475,7 +437,7 @@
         };
 
         // ==========================================
-        // 2. 📦 ESTADO
+        // 3. ESTADO
         // ==========================================
         let state = {
             messages: DB.get('messages', []),
@@ -487,73 +449,72 @@
         let isProcessing = false;
 
         // ==========================================
-        // 3. 🔧 CORRECCIONES AUTOMÁTICAS (SIN IA)
+        // 4. CORREGIR CON IA (vía Cloudflare Worker)
         // ==========================================
-        function getCorrections(text) {
-            const corrections = [];
-            const lower = text.toLowerCase();
-
-            // Reglas de corrección
-            const rules = [
-                // Verbos irregulares comunes
-                { pattern: /\b(i|you|we|they)\s+go\s+to\s+school\s+yesterday\b/gi, fix: 'went to school yesterday', tip: '"Go" en pasado es "went"' },
-                { pattern: /\b(he|she|it)\s+go\s+to\s+school\s+yesterday\b/gi, fix: 'went to school yesterday', tip: '"Go" en pasado es "went"' },
-                { pattern: /\b(i)\s+(is|am|are)\b/gi, fix: 'I am', tip: 'Usa "I am" no "I is"' },
-                { pattern: /\b(he|she|it)\s+(am)\b/gi, fix: 'he/she/it is', tip: 'Con he/she/it usa "is"' },
-                { pattern: /\b(go)\s+(to)\s+(home)\b/gi, fix: 'go home', tip: 'No se dice "go to home", solo "go home"' },
-                { pattern: /\b(eat)\s+(breakfast|lunch|dinner)\b/gi, fix: 'have breakfast/lunch/dinner', tip: 'Usa "have" con comidas, no "eat"' },
-                { pattern: /\b(very)\s+(much)\s+(thank)\b/gi, fix: 'thank you very much', tip: '"Thank you very much" es la forma correcta' },
-                { pattern: /\b(i)\s+(has)\b/gi, fix: 'I have', tip: 'Usa "I have" no "I has"' },
-                { pattern: /\b(he|she|it)\s+(have)\b/gi, fix: 'he/she/it has', tip: 'Con he/she/it usa "has"' },
-                { pattern: /\b(do)\s+(does)\b/gi, fix: 'do/does', tip: '"Do" se usa con I/you/we/they, "does" con he/she/it' },
-                // Errores comunes de tiempo
-                { pattern: /\b(yesterday)\s+(go)\b/gi, fix: 'went yesterday', tip: 'Para acciones en pasado usa el verbo en pasado' },
-                { pattern: /\b(tomorrow)\s+(went)\b/gi, fix: 'will go tomorrow', tip: 'Para el futuro usa "will"' },
-                // Artículos
-                { pattern: /\b(a)\s+(apple|orange|umbrella|hour)\b/gi, fix: 'an $2', tip: 'Usa "an" antes de palabras que empiezan con vocal' },
-                // Preposiciones
-                { pattern: /\b(in)\s+(the)\s+(night)\b/gi, fix: 'at night', tip: 'Se dice "at night", no "in the night"' },
-                { pattern: /\b(at)\s+(the)\s+(morning)\b/gi, fix: 'in the morning', tip: 'Se dice "in the morning", no "at the morning"' },
-            ];
-
-            for (const rule of rules) {
-                if (rule.pattern.test(text)) {
-                    const fixed = text.replace(rule.pattern, rule.fix);
-                    if (fixed !== text) {
-                        corrections.push({
-                            original: text,
-                            fixed: fixed,
-                            tip: rule.tip
-                        });
-                        break; // Solo una corrección por mensaje
-                    }
-                }
+        async function getCorrectionIA(text) {
+            if (!OPENAI_API_KEY || OPENAI_API_KEY === 'TU_API_KEY_AQUI') {
+                return {
+                    error: true,
+                    message: '⚠️ No has configurado tu API Key.'
+                };
             }
 
-            // Si encuentra un error común de tiempo con "go"
-            if (!corrections.length) {
-                if (/\b(go)\s+(yesterday|last\s+week|last\s+month|last\s+year)\b/i.test(text)) {
-                    const fixed = text.replace(/\bgo\b/i, 'went');
-                    corrections.push({
-                        original: text,
-                        fixed: fixed,
-                        tip: '"Go" en pasado es "went"'
-                    });
-                } else if (/\b(went)\s+(tomorrow|next\s+week|next\s+month|next\s+year)\b/i.test(text)) {
-                    const fixed = text.replace(/\bwent\b/i, 'will go');
-                    corrections.push({
-                        original: text,
-                        fixed: fixed,
-                        tip: 'Para el futuro usa "will go"'
-                    });
-                }
-            }
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        apiKey: OPENAI_API_KEY,
+                        model: 'gpt-3.5-turbo',
+                        messages: [{
+                            role: 'system',
+                            content: `Eres un profesor de inglés experto. Corrige el mensaje del usuario si tiene errores.
+                            Si está perfecto: "✅ ¡Perfecto! Tu frase está bien escrita."
+                            Si tiene errores: 
+                            ❌ Error: [original] → [corregida]
+                            💡 Tip: [explicación breve]
+                            Siempre responde en español, sé amable y motivador.`
+                        }, {
+                            role: 'user',
+                            content: text
+                        }],
+                        temperature: 0.3,
+                        max_tokens: 180
+                    })
+                });
 
-            return corrections.length > 0 ? corrections[0] : null;
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    let errorMsg = `Error ${response.status}`;
+                    if (response.status === 401) errorMsg = '❌ Clave API incorrecta. Verifica tu API Key.';
+                    else if (response.status === 429) errorMsg = '⏳ Demasiadas peticiones. Espera un momento.';
+                    else if (response.status === 404) errorMsg = '❌ Error de configuración.';
+                    else errorMsg += ': ' + (errorData.error?.message || 'Error desconocido');
+                    return { error: true, message: errorMsg };
+                }
+
+                const data = await response.json();
+                const iaMessage = data.choices[0].message.content;
+                const hasCorrection = iaMessage.includes('❌ Error:') || iaMessage.includes('→');
+
+                return {
+                    error: false,
+                    message: iaMessage,
+                    hasCorrection: hasCorrection
+                };
+
+            } catch (error) {
+                return {
+                    error: true,
+                    message: '❌ Error de conexión. Revisa tu internet.'
+                };
+            }
         }
 
         // ==========================================
-        // 4. 🖥️ RENDERIZAR
+        // 5. RENDERIZAR
         // ==========================================
         function renderChat() {
             const container = document.getElementById('chatMessages');
@@ -624,7 +585,7 @@
         }
 
         // ==========================================
-        // 5. 📨 ENVIAR MENSAJE
+        // 6. ENVIAR MENSAJE
         // ==========================================
         async function sendMessage() {
             if (isProcessing) return;
@@ -633,47 +594,53 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // Mostrar loading
+            document.getElementById('errorDisplay').style.display = 'none';
+
+            state.messages.push({ role: 'user', text: text });
+            DB.set('messages', state.messages);
+            renderChat();
+            updateStats();
+
             isProcessing = true;
             document.getElementById('sendBtn').disabled = true;
             document.getElementById('loadingIndicator').style.display = 'flex';
 
-            // Simular tiempo de procesamiento (para que se vea el loading)
-            await new Promise(resolve => setTimeout(resolve, 600));
+            const result = await getCorrectionIA(text);
 
-            // Guardar mensaje del usuario
-            state.messages.push({ role: 'user', text: text });
-            DB.set('messages', state.messages);
-            renderChat();
-
-            // Buscar corrección
-            const correction = getCorrections(text);
-
-            let botReply = '✅ ¡Bien escrito!';
-            if (correction) {
-                botReply = `❌ Error: "${correction.original}" → "${correction.fixed}"`;
-                state.errors += 1;
-                DB.set('errors', state.errors);
-
-                // Guardar tip automáticamente
-                if (!state.tips.includes(correction.tip)) {
-                    state.tips.push(correction.tip);
-                    DB.set('tips', state.tips);
-                }
-            }
-
-            // Guardar mensaje del bot
-            state.messages.push({
-                role: 'bot',
-                text: botReply,
-                correction: correction || null
-            });
-            DB.set('messages', state.messages);
-
-            // Ocultar loading y actualizar
             isProcessing = false;
             document.getElementById('sendBtn').disabled = false;
             document.getElementById('loadingIndicator').style.display = 'none';
+
+            let botMessage = result.message;
+            let correction = null;
+
+            if (result.error) {
+                botMessage = result.message;
+                const errorDiv = document.getElementById('errorDisplay');
+                errorDiv.textContent = result.message;
+                errorDiv.style.display = 'block';
+            } else {
+                if (result.hasCorrection) {
+                    const tipMatch = result.message.match(/💡 Tip: (.*)/);
+                    if (tipMatch && tipMatch[1]) {
+                        const tip = tipMatch[1].trim();
+                        if (!state.tips.includes(tip)) {
+                            state.tips.push(tip);
+                            DB.set('tips', state.tips);
+                        }
+                    }
+                    state.errors += 1;
+                    DB.set('errors', state.errors);
+                    correction = result.message;
+                }
+            }
+
+            state.messages.push({
+                role: 'bot',
+                text: botMessage,
+                correction: correction || null
+            });
+            DB.set('messages', state.messages);
 
             renderChat();
             renderTips();
@@ -685,7 +652,7 @@
         }
 
         // ==========================================
-        // 6. 🧹 ELIMINAR TIPS
+        // 7. ELIMINAR TIPS
         // ==========================================
         document.getElementById('clearTips').addEventListener('click', function() {
             if (state.tips.length === 0) return;
@@ -697,7 +664,7 @@
         });
 
         // ==========================================
-        // 7. 📚 DICCIONARIO DE VERBOS
+        // 8. DICCIONARIO DE VERBOS
         // ==========================================
         const verbos = [
             { presente: 'be', pasado: 'was/were', futuro: 'will be', participio: 'been' },
@@ -781,7 +748,7 @@
         }
 
         // ==========================================
-        // 8. 🚀 INICIALIZAR
+        // 9. INICIALIZAR
         // ==========================================
         function init() {
             renderChat();
