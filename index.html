@@ -3,153 +3,490 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EnglishMate - Aprende Inglés</title>
+    <title>EnglishMate - Tu profe de inglés IA</title>
     <style>
-        /* ===== ESTILOS (igual que antes) ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== RESET Y BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #fafafa;
+            background: #f8f9fa;
             color: #1a1a1a;
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 20px;
             line-height: 1.6;
+            min-height: 100vh;
         }
-        h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
-        .subtitle { color: #666; margin-bottom: 30px; font-size: 0.95rem; }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .badge {
+            background: #1a1a1a;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* ===== LAYOUT: CHAT + VERBOS ===== */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 800px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== STATS ===== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #eaeaea;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: #ccc;
+        }
+
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .stat-card .label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== CHAT ===== */
         .chat-container {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border-radius: 16px;
+            border: 1px solid #eaeaea;
             padding: 20px;
             margin-bottom: 24px;
-            border: 1px solid #eee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
+
         .chat-messages {
-            max-height: 300px;
+            max-height: 380px;
             overflow-y: auto;
             margin-bottom: 16px;
-            padding-right: 8px;
+            padding-right: 4px;
         }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #d0d0d0;
+            border-radius: 10px;
+        }
+
         .message {
             margin-bottom: 12px;
             padding: 10px 14px;
-            border-radius: 10px;
-            max-width: 85%;
+            border-radius: 12px;
+            max-width: 88%;
             font-size: 0.95rem;
+            animation: fadeIn 0.3s ease;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .message.user {
             background: #e8e8e8;
             margin-left: auto;
             text-align: right;
+            border-bottom-right-radius: 4px;
         }
+
         .message.bot {
             background: #f0f0f0;
             margin-right: auto;
+            border-bottom-left-radius: 4px;
         }
-        .message.bot .correction {
+
+        .message .correction {
             color: #d32f2f;
             font-weight: 500;
-            margin-top: 4px;
+            margin-top: 6px;
             font-size: 0.9rem;
         }
-        .message.bot .tip {
+
+        .message .tip {
             color: #2e7d32;
             font-size: 0.85rem;
             margin-top: 4px;
             background: #f1f8e9;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
             display: inline-block;
         }
+
+        .message .perfect {
+            color: #2e7d32;
+            font-weight: 500;
+        }
+
         .chat-input-area {
             display: flex;
             gap: 10px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 16px;
         }
+
         .chat-input-area input {
             flex: 1;
             padding: 10px 14px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.95rem;
             outline: none;
             transition: border 0.2s;
         }
-        .chat-input-area input:focus { border-color: #1a1a1a; }
+
+        .chat-input-area input:focus {
+            border-color: #1a1a1a;
+        }
+
         .chat-input-area button {
-            padding: 10px 20px;
+            padding: 10px 24px;
             background: #1a1a1a;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.95rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
-        .chat-input-area button:hover { background: #333; }
+
+        .chat-input-area button:hover {
+            background: #333;
+            transform: scale(1.02);
+        }
+
         .chat-input-area button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
+
+        .loading {
+            color: #666;
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .stat-card {
-            background: white;
-            padding: 16px;
-            border-radius: 10px;
-            border: 1px solid #eee;
-            text-align: center;
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e0e0e0;
+            border-top-color: #1a1a1a;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
         }
-        .stat-card .number { font-size: 1.8rem; font-weight: 700; }
-        .stat-card .label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-msg {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border-left: 4px solid #d32f2f;
+        }
+
+        /* ===== TIPS ===== */
         .tips-section {
             background: white;
-            border-radius: 12px;
-            border: 1px solid #eee;
+            border-radius: 16px;
+            border: 1px solid #eaeaea;
             padding: 20px;
+            margin-bottom: 24px;
         }
-        .tips-section h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; color: #444; }
+
+        .tips-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .tips-section h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .clear-tips {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .clear-tips:hover {
+            background: #f0f0f0;
+            color: #d32f2f;
+        }
+
         .tip-item {
             background: #f8f8f8;
             padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 6px;
             font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.2s;
         }
+
+        .tip-item:hover {
+            background: #f0f0f0;
+        }
+
         .tip-item .delete-tip {
             background: none;
             border: none;
-            color: #999;
+            color: #bbb;
             cursor: pointer;
             font-size: 1rem;
+            padding: 0 4px;
+            transition: color 0.2s;
         }
-        .tip-item .delete-tip:hover { color: #d32f2f; }
-        .empty-tips { color: #aaa; font-size: 0.9rem; font-style: italic; }
-        .loading {
-            color: #666;
+
+        .tip-item .delete-tip:hover {
+            color: #d32f2f;
+        }
+
+        .empty-tips {
+            color: #aaa;
             font-size: 0.9rem;
             font-style: italic;
         }
+
+        /* ===== DICCIONARIO DE VERBOS ===== */
+        .verbs-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #eaeaea;
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .verbs-card h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verbs-search {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .verbs-search:focus {
+            border-color: #1a1a1a;
+        }
+
+        .verbs-list {
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+
+        .verbs-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .verbs-list::-webkit-scrollbar-thumb {
+            background: #d0d0d0;
+            border-radius: 10px;
+        }
+
+        .verb-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 4px;
+            padding: 6px 4px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .verb-item:hover {
+            background: #f8f9fa;
+        }
+
+        .verb-item .v-presente {
+            font-weight: 600;
+        }
+
+        .verb-item .v-pasado {
+            color: #d32f2f;
+        }
+
+        .verb-item .v-futuro {
+            color: #1565c0;
+        }
+
+        .verb-item .v-participio {
+            color: #2e7d32;
+        }
+
+        .verb-item .v-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            color: #aaa;
+            letter-spacing: 0.3px;
+        }
+
+        .verb-item.hidden {
+            display: none;
+        }
+
+        .no-verbs {
+            color: #aaa;
+            font-style: italic;
+            font-size: 0.9rem;
+            padding: 12px 0;
+        }
+
+        @media (max-width: 800px) {
+            .verbs-card {
+                position: static;
+            }
+        }
+
         @media (max-width: 600px) {
-            body { padding: 12px; }
-            .stats { grid-template-columns: repeat(2, 1fr); }
-            .chat-input-area { flex-direction: column; }
+            body {
+                padding: 12px;
+            }
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .stat-card {
+                padding: 12px;
+            }
+            .stat-card .number {
+                font-size: 1.4rem;
+            }
+            .chat-input-area {
+                flex-direction: column;
+            }
+            .chat-input-area button {
+                width: 100%;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+            .verb-item {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                font-size: 0.75rem;
+                gap: 2px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h1>english<span style="font-weight:300;">mate</span></h1>
-    <p class="subtitle">Habla en inglés. Recibe correcciones de IA.</p>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <h1>english<span style="font-weight:300;">mate</span></h1>
+        <span class="badge">🤖 IA</span>
+    </div>
+    <p class="subtitle">Escribe en inglés y recibe correcciones con IA. Consulta los verbos a la derecha.</p>
 
+    <!-- ===== STATS ===== -->
     <div class="stats">
         <div class="stat-card">
             <div class="number" id="totalMessages">0</div>
@@ -157,46 +494,85 @@
         </div>
         <div class="stat-card">
             <div class="number" id="totalErrors">0</div>
-            <div class="label">Errores corregidos</div>
+            <div class="label">Errores</div>
         </div>
         <div class="stat-card">
             <div class="number" id="streakDays">0</div>
-            <div class="label">Racha (días)</div>
+            <div class="label">Racha 🔥</div>
         </div>
     </div>
 
-    <div class="chat-container">
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">👋 Hola. Escribe algo en inglés y la IA te corregirá.</div>
+    <!-- ===== MAIN GRID: CHAT + VERBOS ===== -->
+    <div class="main-grid">
+
+        <!-- ===== COLUMNA IZQUIERDA: CHAT + TIPS ===== -->
+        <div>
+
+            <!-- CHAT -->
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">
+                        👋 ¡Hola! Escribe algo en inglés y te corregiré.
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Escribe en inglés..." autofocus>
+                    <button id="sendBtn">Enviar</button>
+                </div>
+
+                <div id="loadingIndicator" class="loading" style="display:none;">
+                    <span class="spinner"></span> La IA está pensando...
+                </div>
+                <div id="errorDisplay" class="error-msg" style="display:none;"></div>
+            </div>
+
+            <!-- TIPS -->
+            <div class="tips-section">
+                <div class="tips-header">
+                    <h3>📌 Tips guardados</h3>
+                    <button class="clear-tips" id="clearTips">Eliminar todos</button>
+                </div>
+                <div id="tipsList">
+                    <div class="empty-tips">Aún no hay tips. Escribe algo para empezar.</div>
+                </div>
+            </div>
+
         </div>
-        <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="Escribe en inglés..." autofocus>
-            <button id="sendBtn">Enviar</button>
+
+        <!-- ===== COLUMNA DERECHA: DICCIONARIO DE VERBOS ===== -->
+        <div class="verbs-card">
+            <h3>📚 Verbos en inglés</h3>
+            <input type="text" class="verbs-search" id="verbsSearch" placeholder="Buscar verbo...">
+
+            <div class="verbs-list" id="verbsList">
+                <!-- Los verbos se cargan con JavaScript -->
+                <div class="no-verbs">Cargando verbos...</div>
+            </div>
         </div>
-        <div id="loadingIndicator" class="loading" style="display:none; margin-top:8px;">⏳ La IA está pensando...</div>
+
     </div>
 
-    <div class="tips-section">
-        <h3>📌 Tips guardados automáticamente</h3>
-        <div id="tipsList">
-            <div class="empty-tips">Aún no hay tips. Comienza a practicar.</div>
-        </div>
-    </div>
-
+    <!-- ========================================== -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <!-- ========================================== -->
     <script>
         // ==========================================
-        // 1. CONFIGURACIÓN
+        // 1. ⚙️ CONFIGURACIÓN - TU CLAVE YA ESTÁ PUESTA
         // ==========================================
-        // IMPORTANTE: Reemplaza con tu API Key de OpenAI
-        const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'TU_API_KEY_AQUI';
+        const OPENAI_API_KEY = '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';
 
         // ==========================================
-        // 2. BASE DE DATOS LOCAL (localStorage)
+        // 2. 💾 BASE DE DATOS LOCAL
         // ==========================================
         const DB = {
-            get(key, defaultValue = null) {
-                const data = localStorage.getItem('englishmate_' + key);
-                return data ? JSON.parse(data) : defaultValue;
+            get(key, def = null) {
+                try {
+                    const data = localStorage.getItem('englishmate_' + key);
+                    return data ? JSON.parse(data) : def;
+                } catch {
+                    return def;
+                }
             },
             set(key, value) {
                 localStorage.setItem('englishmate_' + key, JSON.stringify(value));
@@ -204,7 +580,7 @@
         };
 
         // ==========================================
-        // 3. ESTADO
+        // 3. 📦 ESTADO
         // ==========================================
         let state = {
             messages: DB.get('messages', []),
@@ -216,13 +592,13 @@
         let isProcessing = false;
 
         // ==========================================
-        // 4. FUNCIÓN PARA CORREGIR CON IA
+        // 4. 🤖 CORREGIR CON IA
         // ==========================================
         async function getCorrectionIA(text) {
             if (!OPENAI_API_KEY || OPENAI_API_KEY === 'TU_API_KEY_AQUI') {
                 return {
                     error: true,
-                    message: '⚠️ No has configurado tu API Key de OpenAI. Ve a la línea 83 del código y pon tu clave.'
+                    message: '⚠️ No has configurado tu API Key.'
                 };
             }
 
@@ -235,36 +611,35 @@
                     },
                     body: JSON.stringify({
                         model: 'gpt-3.5-turbo',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `Eres un profesor de inglés. Corrige el mensaje del usuario si tiene errores gramaticales o de vocabulario. 
-                                Si está correcto, responde: "✅ ¡Perfecto! Tu frase está bien escrita." 
-                                Si tiene errores, responde con este formato exacto:
-                                ❌ Error: [frase original] → [frase corregida]
-                                💡 Tip: [explicación breve del error]
-                                Siempre responde en español y sé amable.`
-                            },
-                            { role: 'user', content: text }
-                        ],
+                        messages: [{
+                            role: 'system',
+                            content: `Eres un profesor de inglés experto. Corrige el mensaje del usuario si tiene errores.
+                            Si está perfecto: "✅ ¡Perfecto! Tu frase está bien escrita."
+                            Si tiene errores: 
+                            ❌ Error: [original] → [corregida]
+                            💡 Tip: [explicación breve]
+                            Siempre responde en español, sé amable y motivador.`
+                        }, {
+                            role: 'user',
+                            content: text
+                        }],
                         temperature: 0.3,
-                        max_tokens: 150
+                        max_tokens: 180
                     })
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error('Error OpenAI:', errorData);
-                    return {
-                        error: true,
-                        message: `❌ Error con la IA: ${errorData.error?.message || 'Error desconocido'}`
-                    };
+                    const errorData = await response.json().catch(() => ({}));
+                    let errorMsg = `Error ${response.status}`;
+                    if (response.status === 401) errorMsg = '❌ Clave API incorrecta. Verifica tu API Key.';
+                    else if (response.status === 429) errorMsg = '⏳ Demasiadas peticiones. Espera un momento.';
+                    else if (response.status === 404) errorMsg = '❌ Error de configuración.';
+                    else errorMsg += ': ' + (errorData.error?.message || 'Error desconocido');
+                    return { error: true, message: errorMsg };
                 }
 
                 const data = await response.json();
                 const iaMessage = data.choices[0].message.content;
-
-                // Detectar si tiene corrección
                 const hasCorrection = iaMessage.includes('❌ Error:') || iaMessage.includes('→');
 
                 return {
@@ -274,49 +649,40 @@
                 };
 
             } catch (error) {
-                console.error('Error de red:', error);
                 return {
                     error: true,
-                    message: '❌ Error de conexión. Revisa tu internet o prueba más tarde.'
+                    message: '❌ Error de conexión. Revisa tu internet.'
                 };
             }
         }
 
         // ==========================================
-        // 5. RENDERIZAR CHAT
+        // 5. 🖥️ RENDERIZAR
         // ==========================================
         function renderChat() {
             const container = document.getElementById('chatMessages');
             container.innerHTML = '';
-
             state.messages.forEach(msg => {
                 const div = document.createElement('div');
                 div.className = `message ${msg.role}`;
                 div.innerHTML = msg.text;
-
                 if (msg.correction) {
-                    const corrDiv = document.createElement('div');
-                    corrDiv.className = 'correction';
-                    corrDiv.textContent = msg.correction;
-                    div.appendChild(corrDiv);
+                    const c = document.createElement('div');
+                    c.className = 'correction';
+                    c.textContent = msg.correction;
+                    div.appendChild(c);
                 }
-
                 container.appendChild(div);
             });
-
             container.scrollTop = container.scrollHeight;
         }
 
-        // ==========================================
-        // 6. RENDERIZAR TIPS
-        // ==========================================
         function renderTips() {
             const container = document.getElementById('tipsList');
             if (state.tips.length === 0) {
-                container.innerHTML = '<div class="empty-tips">Aún no hay tips. Comienza a practicar.</div>';
+                container.innerHTML = '<div class="empty-tips">Aún no hay tips. Escribe algo para empezar.</div>';
                 return;
             }
-
             container.innerHTML = '';
             state.tips.forEach((tip, index) => {
                 const div = document.createElement('div');
@@ -327,42 +693,33 @@
                 `;
                 container.appendChild(div);
             });
-
             document.querySelectorAll('.delete-tip').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const index = parseInt(this.dataset.index);
-                    state.tips.splice(index, 1);
+                    const i = parseInt(this.dataset.index);
+                    state.tips.splice(i, 1);
                     DB.set('tips', state.tips);
                     renderTips();
                 });
             });
         }
 
-        // ==========================================
-        // 7. ACTUALIZAR ESTADÍSTICAS
-        // ==========================================
         function updateStats() {
             document.getElementById('totalMessages').textContent = state.messages.length;
             document.getElementById('totalErrors').textContent = state.errors;
             document.getElementById('streakDays').textContent = state.streak;
         }
 
-        // ==========================================
-        // 8. ACTUALIZAR RACHA
-        // ==========================================
         function updateStreak() {
             const today = new Date().toDateString();
             if (state.lastDate !== today) {
                 const yesterday = new Date();
                 yesterday.setDate(yesterday.getDate() - 1);
                 const yesterdayStr = yesterday.toDateString();
-
                 if (state.lastDate === yesterdayStr) {
                     state.streak += 1;
                 } else if (state.lastDate !== today) {
                     state.streak = 1;
                 }
-
                 state.lastDate = today;
                 DB.set('streak', state.streak);
                 DB.set('lastDate', state.lastDate);
@@ -371,31 +728,28 @@
         }
 
         // ==========================================
-        // 9. ENVIAR MENSAJE (CON IA)
+        // 6. 📨 ENVIAR MENSAJE
         // ==========================================
         async function sendMessage() {
             if (isProcessing) return;
 
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
-
             if (!text) return;
 
-            // Guardar mensaje del usuario
+            document.getElementById('errorDisplay').style.display = 'none';
+
             state.messages.push({ role: 'user', text: text });
             DB.set('messages', state.messages);
             renderChat();
             updateStats();
 
-            // Deshabilitar input mientras procesa
             isProcessing = true;
             document.getElementById('sendBtn').disabled = true;
-            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('loadingIndicator').style.display = 'flex';
 
-            // Obtener corrección de la IA
             const result = await getCorrectionIA(text);
 
-            // Habilitar input
             isProcessing = false;
             document.getElementById('sendBtn').disabled = false;
             document.getElementById('loadingIndicator').style.display = 'none';
@@ -405,10 +759,11 @@
 
             if (result.error) {
                 botMessage = result.message;
+                const errorDiv = document.getElementById('errorDisplay');
+                errorDiv.textContent = result.message;
+                errorDiv.style.display = 'block';
             } else {
-                // Extraer corrección si existe
                 if (result.hasCorrection) {
-                    // Buscar el tip (lo que viene después de 💡)
                     const tipMatch = result.message.match(/💡 Tip: (.*)/);
                     if (tipMatch && tipMatch[1]) {
                         const tip = tipMatch[1].trim();
@@ -423,7 +778,6 @@
                 }
             }
 
-            // Guardar mensaje del bot
             state.messages.push({
                 role: 'bot',
                 text: botMessage,
@@ -441,17 +795,122 @@
         }
 
         // ==========================================
-        // 10. INICIALIZAR
+        // 7. 🧹 ELIMINAR TIPS
+        // ==========================================
+        document.getElementById('clearTips').addEventListener('click', function() {
+            if (state.tips.length === 0) return;
+            if (confirm('¿Eliminar todos los tips guardados?')) {
+                state.tips = [];
+                DB.set('tips', state.tips);
+                renderTips();
+            }
+        });
+
+        // ==========================================
+        // 8. 📚 DICCIONARIO DE VERBOS
+        // ==========================================
+        const verbos = [
+            { presente: 'be', pasado: 'was/were', futuro: 'will be', participio: 'been' },
+            { presente: 'have', pasado: 'had', futuro: 'will have', participio: 'had' },
+            { presente: 'do', pasado: 'did', futuro: 'will do', participio: 'done' },
+            { presente: 'say', pasado: 'said', futuro: 'will say', participio: 'said' },
+            { presente: 'go', pasado: 'went', futuro: 'will go', participio: 'gone' },
+            { presente: 'get', pasado: 'got', futuro: 'will get', participio: 'gotten' },
+            { presente: 'make', pasado: 'made', futuro: 'will make', participio: 'made' },
+            { presente: 'know', pasado: 'knew', futuro: 'will know', participio: 'known' },
+            { presente: 'think', pasado: 'thought', futuro: 'will think', participio: 'thought' },
+            { presente: 'see', pasado: 'saw', futuro: 'will see', participio: 'seen' },
+            { presente: 'come', pasado: 'came', futuro: 'will come', participio: 'come' },
+            { presente: 'take', pasado: 'took', futuro: 'will take', participio: 'taken' },
+            { presente: 'give', pasado: 'gave', futuro: 'will give', participio: 'given' },
+            { presente: 'eat', pasado: 'ate', futuro: 'will eat', participio: 'eaten' },
+            { presente: 'drink', pasado: 'drank', futuro: 'will drink', participio: 'drunk' },
+            { presente: 'write', pasado: 'wrote', futuro: 'will write', participio: 'written' },
+            { presente: 'read', pasado: 'read', futuro: 'will read', participio: 'read' },
+            { presente: 'speak', pasado: 'spoke', futuro: 'will speak', participio: 'spoken' },
+            { presente: 'buy', pasado: 'bought', futuro: 'will buy', participio: 'bought' },
+            { presente: 'sell', pasado: 'sold', futuro: 'will sell', participio: 'sold' },
+            { presente: 'build', pasado: 'built', futuro: 'will build', participio: 'built' },
+            { presente: 'break', pasado: 'broke', futuro: 'will break', participio: 'broken' },
+            { presente: 'choose', pasado: 'chose', futuro: 'will choose', participio: 'chosen' },
+            { presente: 'drive', pasado: 'drove', futuro: 'will drive', participio: 'driven' },
+            { presente: 'fall', pasado: 'fell', futuro: 'will fall', participio: 'fallen' },
+            { presente: 'feel', pasado: 'felt', futuro: 'will feel', participio: 'felt' },
+            { presente: 'find', pasado: 'found', futuro: 'will find', participio: 'found' },
+            { presente: 'fly', pasado: 'flew', futuro: 'will fly', participio: 'flown' },
+            { presente: 'forget', pasado: 'forgot', futuro: 'will forget', participio: 'forgotten' },
+            { presente: 'forgive', pasado: 'forgave', futuro: 'will forgive', participio: 'forgiven' },
+            { presente: 'grow', pasado: 'grew', futuro: 'will grow', participio: 'grown' },
+            { presente: 'hide', pasado: 'hid', futuro: 'will hide', participio: 'hidden' },
+            { presente: 'keep', pasado: 'kept', futuro: 'will keep', participio: 'kept' },
+            { presente: 'lead', pasado: 'led', futuro: 'will lead', participio: 'led' },
+            { presente: 'lose', pasado: 'lost', futuro: 'will lose', participio: 'lost' },
+            { presente: 'mean', pasado: 'meant', futuro: 'will mean', participio: 'meant' },
+            { presente: 'meet', pasado: 'met', futuro: 'will meet', participio: 'met' },
+            { presente: 'pay', pasado: 'paid', futuro: 'will pay', participio: 'paid' },
+            { presente: 'put', pasado: 'put', futuro: 'will put', participio: 'put' },
+            { presente: 'run', pasado: 'ran', futuro: 'will run', participio: 'run' },
+            { presente: 'send', pasado: 'sent', futuro: 'will send', participio: 'sent' },
+            { presente: 'show', pasado: 'showed', futuro: 'will show', participio: 'shown' },
+            { presente: 'sing', pasado: 'sang', futuro: 'will sing', participio: 'sung' },
+            { presente: 'swim', pasado: 'swam', futuro: 'will swim', participio: 'swum' },
+            { presente: 'teach', pasado: 'taught', futuro: 'will teach', participio: 'taught' },
+            { presente: 'tell', pasado: 'told', futuro: 'will tell', participio: 'told' },
+            { presente: 'understand', pasado: 'understood', futuro: 'will understand', participio: 'understood' },
+            { presente: 'win', pasado: 'won', futuro: 'will win', participio: 'won' },
+            { presente: 'wear', pasado: 'wore', futuro: 'will wear', participio: 'worn' }
+        ];
+
+        function renderVerbs(filter = '') {
+            const container = document.getElementById('verbsList');
+            const searchTerm = filter.toLowerCase().trim();
+
+            const filtered = searchTerm === '' ?
+                verbos :
+                verbos.filter(v =>
+                    v.presente.includes(searchTerm) ||
+                    v.pasado.includes(searchTerm) ||
+                    v.futuro.includes(searchTerm) ||
+                    v.participio.includes(searchTerm)
+                );
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="no-verbs">🔍 No se encontraron verbos.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(v => {
+                const div = document.createElement('div');
+                div.className = 'verb-item';
+                div.innerHTML = `
+                    <span class="v-presente">${v.presente}</span>
+                    <span class="v-pasado">${v.pasado}</span>
+                    <span class="v-futuro">${v.futuro}</span>
+                    <span class="v-participio">${v.participio}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ==========================================
+        // 9. 🚀 INICIALIZAR
         // ==========================================
         function init() {
             renderChat();
             renderTips();
             updateStats();
             updateStreak();
+            renderVerbs();
 
             document.getElementById('sendBtn').addEventListener('click', sendMessage);
-            document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            document.getElementById('chatInput').addEventListener('keydown', e => {
                 if (e.key === 'Enter') sendMessage();
+            });
+
+            // Buscador de verbos
+            document.getElementById('verbsSearch').addEventListener('input', function() {
+                renderVerbs(this.value);
             });
         }
 
@@ -460,3 +919,4 @@
 
 </body>
 </html>
+
